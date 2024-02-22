@@ -1,23 +1,29 @@
 import { useState } from "react";
-import Form from "./components/Form";
+import ExpenseFilter from "./components/ExpenseTracker/ExpenseFilter";
+import ExpenseList from "./components/ExpenseTracker/ExpenseList";
+import categories from "./components/ExpenseTracker/categories";
+import ExpenseForm from "./components/ExpenseTracker/ExpenseForm";
 
 function App()
 {
-  const [alertVisible, setAlertVisibility] =useState(false);
-  const[cart , setCart]=useState({
-    discount:.1,
-    items: [
-      {id: 1, name: 'product1' ,qty : 1},
-      {id: 2, name: 'product2' ,qty : 1}
-    ]
-  });
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [expenses, setExpense] = useState([
+    {id: 1,description : 'aaa', amount : 10, category : 'Veg'},
+    {id: 2,description : 'bbb', amount : 10, category : 'Veg'},
+    {id: 3,description : 'ccc', amount : 10, category : 'Veg'},
+    {id: 4,description : 'ddd', amount : 10, category : 'Veg'}
+  ]);
 
-  const handleClick= () =>{
-    setCart({...cart, items : cart.items.map(item => item.id === 1 ? {...item, qty : item.qty + 1} : item)});
-  }
+  const visibleExpenses = selectedCategory ? expenses.filter(e => e.category === selectedCategory) : expenses;
 
   return <div>
-    <Form />
+    <div className="mb-5">
+      <ExpenseForm onSubmit={(expense) => setExpense([...expenses, {...expense, id: expenses.length +1}])} />
+    </div>
+    <div className="mb-3">
+      <ExpenseFilter onSelectCategory={(category) => setSelectedCategory(category)} />
+    </div>
+    <ExpenseList expenses={visibleExpenses} onDelete={(id)=> setExpense(expenses.filter(e => e.id !== id))} />
   </div>
 }
 
